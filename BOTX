@@ -1,221 +1,128 @@
---====================================================
--- REX CHAT BOT | DELTA SAFE | FINAL OWNER EDITION
---====================================================
+--[[ REX CHAT BOT | DELTA SAFE | ULTRA OBFUSCATED ]]--
 
--- Services
-local Players = game:GetService("Players")
-local TextChatService = game:GetService("TextChatService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local LocalPlayer = Players.LocalPlayer
+------------------ EDITABLE ------------------
+local OWNER_NAME = "ACU44A"
 
---====================
--- 👑 OWNER USERNAME
---====================
-local OWNER_NAME = "ACU44A" -- CHANGE ONLY IF NEEDED
-
---====================
--- SETTINGS
---====================
-local ChatSpam = false
-local BotLocked = false
-local TargetName = ""
-local WordIndex = 1
-local SpamThread = nil
-
---====================
--- EMOJIS (50+)
---====================
-local Emojis = {
-	"🔥","💀","😂","😈","👑","⚡","💣","🚀","😎","🤡",
-	"👀","💥","🧠","🎯","☠️","👿","🦂","🐍","🦅","🦁",
-	"🐉","🦇","🕷️","🗡️","⚔️","🔪","💎","🧿","📛",
-	"🚨","☄️","🌪️","🌋","❌","⭕","🟥","⬛","🟪","🔱",
-	"🪓","🛡️","🏴‍☠️","🧨","🎭","🪐","🌌","🌠","🌀"
+local AccessUsers = {
+	[""] = true,
+	[""] = true,
+	["FriendName2"] = true,
+	[""] = true
 }
+------------------------------------------------
 
---====================
--- WORDS (300+)
---====================
-local Words = {
-"BUILDING","CLASSROOM","STUDENT","TEACHER","KNOWLEDGE","LEARNING","EDUCATION",
-"SCHOOL","COLLEGE","UNIVERSITY","SYLLABUS","TEXTBOOK","EXAMINATION","RESULT",
-"SCHOLARSHIP","HOMEWORK","PROJECT","ASSIGNMENT","DISCIPLINE","ATTENDANCE",
+do
+	local _A,_B,_C,_D =
+	game:GetService("Players"),
+	game:GetService("TextChatService"),
+	game:GetService("ReplicatedStorage"),
+	game:GetService("RunService")
 
-"SCIENCE","PHYSICS","CHEMISTRY","BIOLOGY","EXPERIMENT","LABORATORY","FORMULA",
-"EQUATION","ENERGY","FORCE","MOTION","GRAVITY","PRESSURE","TEMPERATURE","VOLUME",
-"DENSITY","REACTION","MOLECULE","ATOM","ELEMENT","COMPOUND",
+	local _P = _A.LocalPlayer
+	if not _P or not AccessUsers[_P.Name] then return end
 
-"SPACE","PLANET","GALAXY","UNIVERSE","ASTEROID","COMET","NEBULA","BLACKHOLE",
-"SATELLITE","ORBIT","COSMOS","STAR","SUN","MOON","METEOR","ROCKET","SPACESHIP",
-"ALIEN","UFO","DIMENSION",
-
-"TECHNOLOGY","INTERNET","SOFTWARE","HARDWARE","PROGRAM","SCRIPT","ALGORITHM",
-"LOGIC","DATABASE","SERVER","NETWORK","SECURITY","FIREWALL","ENCRYPTION",
-"HACKING","CODING","DEBUG","SYSTEM","PROCESSOR","MEMORY","STORAGE",
-
-"MOBILE","ANDROID","IPHONE","LAPTOP","COMPUTER","KEYBOARD","MOUSE","MONITOR",
-"SCREEN","DISPLAY","PIXEL","GRAPHICS","RENDER","ANIMATION","FRAME","CAMERA",
-"LENS","FOCUS","ZOOM","RESOLUTION",
-
-"NATURE","FOREST","RIVER","MOUNTAIN","OCEAN","SEA","DESERT","ISLAND","VALLEY",
-"WEATHER","CLIMATE","RAIN","STORM","THUNDER","LIGHTNING","RAINBOW","WIND",
-"CLOUD","SUNLIGHT","MOONLIGHT",
-
-"VEHICLE","CAR","BIKE","TRUCK","BUS","TRAIN","METRO","AIRPLANE","HELICOPTER",
-"SHIP","BOAT","SUBMARINE","HIGHWAY","ROAD","BRIDGE","TUNNEL","TRAFFIC","SIGNAL",
-
-"CITY","VILLAGE","COUNTRY","NATION","CAPITAL","BORDER","MAP","STREET","HOSPITAL",
-"MARKET","MALL","SHOP","HOTEL","RESTAURANT","OFFICE","FACTORY","INDUSTRY",
-
-"BUSINESS","MARKET","TRADE","ECONOMY","INVESTMENT","PROFIT","LOSS","REVENUE",
-"CAPITAL","SHARE","STOCK","COMPANY","BRAND","PRODUCT","SERVICE","CUSTOMER",
-"CLIENT","DEAL","CONTRACT","FINANCE",
-
-"SPORT","GAME","PLAYER","TEAM","MATCH","SCORE","GOAL","WIN","LOSS","COACH",
-"TRAINING","PRACTICE","FITNESS","STRENGTH","SPEED","AGILITY","BALANCE",
-"ENDURANCE","STAMINA","CHAMPION",
-
-"MUSIC","SONG","MELODY","RHYTHM","BEAT","HARMONY","VOCAL","INSTRUMENT","PIANO",
-"GUITAR","DRUM","BASS","VIOLIN","FLUTE","SAXOPHONE","ORCHESTRA","CONCERT",
-"DJ","REMIX","VOLUME",
-
-"KING","BOSS","LEGEND","MONSTER","DANGER","POWER","ATTITUDE","DOMINANCE",
-"FEARLESS","SAVAGE","BRUTAL","DEADLY","TOXIC","UNSTOPPABLE","INVINCIBLE",
-"DESTROYER","HUNTER","PREDATOR","WARRIOR","EMPEROR"
-}
-
---====================
--- SEND CHAT
---====================
-local function SendChat(msg)
-	pcall(function()
-		if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-			TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
-		else
-			ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
+	-- noise
+	local function _j()
+		local x=0
+		for i=1,math.random(20,40) do
+			x=x+math.cos(i)
 		end
-	end)
-end
-
---====================
--- SPAM MESSAGE
---====================
-local function GetNextSpamMessage()
-	local word = Words[WordIndex]
-	local emoji = Emojis[math.random(#Emojis)]
-
-	WordIndex += 1
-	if WordIndex > #Words then WordIndex = 1 end
-
-	return "_____________________________________________________________________________________ "
-		.. TargetName .. " TMKX MAI " .. word .. " " .. emoji
-end
-
---====================
--- START SPAM LOOP
---====================
-local function StartSpam()
-	if SpamThread or BotLocked or TargetName == "" then return end
-
-	SpamThread = task.spawn(function()
-		while ChatSpam and not BotLocked do
-			SendChat(GetNextSpamMessage())
-			task.wait(2 + math.random())
-		end
-		SpamThread = nil
-	end)
-end
-
---====================
--- OWNER ONLY LOCK / UNLOCK
---====================
-TextChatService.OnIncomingMessage = function(message)
-	if not message.TextSource then return end
-	local player = Players:GetPlayerByUserId(message.TextSource.UserId)
-	if not player or player.Name ~= OWNER_NAME then return end
-
-	local msg = string.lower(message.Text)
-	if msg == "lock bot" then
-		BotLocked = true
-		ChatSpam = false
-		SendChat("________________ BOT LOCKED 🔐")
-	elseif msg == "unlock bot" then
-		BotLocked = false
-		SendChat("________________ BOT UNLOCKED 🔓")
+		return x
 	end
-end
+	_j();_j()
 
---====================================================
--- GUI | RexBot.v1
---====================================================
-task.spawn(function()
-	pcall(function()
-		local gui = Instance.new("ScreenGui", LocalPlayer.PlayerGui)
-		gui.Name = "RexBotV1"
+	local _E={"😁💞","😂🔥","✌🏻😑","😜💕"}
+	local _W=string.split(
+		"QlVJTERJTkcgQ0xBU1NST09NIFNUSURFTlQgS05PV0xFREdFIFNDSUVOQ0UgU1BBQ0UgR0FMQVhZIFVOSVZFUlNFIFRFQ0hOT0xPR1kgSU5URVJORVQgQ09NUFVURVIgTkFUVVJFIEZPUkVTVCBSSVZFUiBPQ0VBTiBDSVRZIENPVU5UUlkgQlVTSU5FU1MgTUFSS0VUIFNQT1JUIE1VU0lDIEtJTkcgQk9TUyBMRUdFTkQgUE9XRVIgQVRUSVRVREUgRkVBUkxFU1MgU0FWQUdFIFVOU1RPUFBABLEUgSU5WSU5DSUJMRQ==",
+		" "
+	)
 
-		local frame = Instance.new("Frame", gui)
-		frame.Size = UDim2.new(0,220,0,140)
-		frame.Position = UDim2.new(0,20,0.5,-70)
-		frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
-		frame.Active = true
-		frame.Draggable = true
-		Instance.new("UICorner", frame)
+	local _run=false
+	local _lock=false
+	local _name=""
+	local _idx=1
+	local _thr=nil
 
-		local title = Instance.new("TextLabel", frame)
-		title.Size = UDim2.new(1,0,0,30)
-		title.Text = "RexBot.v1"
-		title.Font = Enum.Font.GothamBold
-		title.TextSize = 16
-		title.TextColor3 = Color3.new(1,1,1)
-		title.BackgroundTransparency = 1
-
-		local box = Instance.new("TextBox", frame)
-		box.Size = UDim2.new(1,-20,0,30)
-		box.Position = UDim2.new(0,10,0,40)
-		box.Text = ""
-		box.PlaceholderText = "Enter Hater Name"
-		box.Font = Enum.Font.Gotham
-		box.TextSize = 14
-		box.TextColor3 = Color3.new(1,1,1)
-		box.BackgroundColor3 = Color3.fromRGB(35,35,35)
-		Instance.new("UICorner", box)
-
-		box.FocusLost:Connect(function()
-			if box.Text ~= "" then
-				TargetName = box.Text
-				WordIndex = 1
+	local function _s(m)
+		pcall(function()
+			if _B.ChatVersion==Enum.ChatVersion.TextChatService then
+				_B.TextChannels.RBXGeneral:SendAsync(m)
+			else
+				_C.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(m,"All")
 			end
 		end)
+	end
 
-		local start = Instance.new("TextButton", frame)
-		start.Size = UDim2.new(0.45,0,0,30)
-		start.Position = UDim2.new(0.05,0,0,80)
-		start.Text = "START"
-		start.Font = Enum.Font.GothamBold
-		start.TextSize = 14
-		start.BackgroundColor3 = Color3.fromRGB(45,45,45)
-		start.TextColor3 = Color3.new(1,1,1)
-		Instance.new("UICorner", start)
+	local function _m()
+		local w=_W[_idx] or "DATA"
+		local e=_E[math.random(#_E)]
+		_idx+=1
+		if _idx>#_W then _idx=1 end
+		return "________________________________________________________________________________________________________________________________________________________ "
+			.._name.." TMKX MAI "..w.." "..e
+	end
 
-		start.MouseButton1Click:Connect(function()
-			if not ChatSpam and not BotLocked then
-				ChatSpam = true
-				StartSpam()
+	local function _loop()
+		if _thr or _lock or _name=="" then return end
+		_thr=task.spawn(function()
+			while _run and not _lock do
+				_s(_m())
+				task.wait(2+math.random())
 			end
+			_thr=nil
+		end)
+	end
+
+	_B.OnIncomingMessage=function(m)
+		if not m.TextSource then return end
+		local p=_A:GetPlayerByUserId(m.TextSource.UserId)
+		if not p or p.Name~=OWNER_NAME then return end
+		local t=string.lower(m.Text)
+		if t=="lock bot" then
+			_lock=true;_run=false;_s("BOT LOCKED 🔐")
+		elseif t=="unlock bot" then
+			_lock=false;_s("BOT UNLOCKED 🔓")
+		end
+	end
+
+	task.spawn(function()
+		local g=Instance.new("ScreenGui",_P.PlayerGui)
+		g.Name="RBX_"..math.random(100000,999999)
+
+		local f=Instance.new("Frame",g)
+		f.Size=UDim2.new(0,220,0,140)
+		f.Position=UDim2.new(0,20,0.5,-70)
+		f.BackgroundColor3=Color3.fromRGB(20,20,20)
+		f.Active=true;f.Draggable=true
+		Instance.new("UICorner",f)
+
+		local b=Instance.new("TextBox",f)
+		b.Size=UDim2.new(1,-20,0,30)
+		b.Position=UDim2.new(0,10,0,40)
+		b.PlaceholderText="Enter Hater Name"
+		b.BackgroundColor3=Color3.fromRGB(35,35,35)
+		b.TextColor3=Color3.new(1,1,1)
+		Instance.new("UICorner",b)
+
+		b.FocusLost:Connect(function()
+			_name=b.Text;_idx=1
 		end)
 
-		local stop = Instance.new("TextButton", frame)
-		stop.Size = UDim2.new(0.45,0,0,30)
-		stop.Position = UDim2.new(0.5,0,0,80)
-		stop.Text = "STOP"
-		stop.Font = Enum.Font.GothamBold
-		stop.TextSize = 14
-		stop.BackgroundColor3 = Color3.fromRGB(45,45,45)
-		stop.TextColor3 = Color3.new(1,1,1)
-		Instance.new("UICorner", stop)
+		local s=Instance.new("TextButton",f)
+		s.Size=UDim2.new(0.45,0,0,30)
+		s.Position=UDim2.new(0.05,0,0,80)
+		s.Text="START"
+		s.MouseButton1Click:Connect(function()
+			if not _lock then _run=true;_loop() end
+		end)
 
-		stop.MouseButton1Click:Connect(function()
-			ChatSpam = false
+		local x=Instance.new("TextButton",f)
+		x.Size=UDim2.new(0.45,0,0,30)
+		x.Position=UDim2.new(0.5,0,0,80)
+		x.Text="STOP"
+		x.MouseButton1Click:Connect(function()
+			_run=false
 		end)
 	end)
-end)
+end
+
