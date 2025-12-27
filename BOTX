@@ -18,9 +18,9 @@ local OWNER_NAME = "ACU44A"
 --====================
 local AccessUsers = {
 	["ACU44A"] = true,
-	["zyyrooo0"] = true,
+	["denjifwher"] = true,
 	["FriendName2"] = true,
-	[""] = true
+	["animeguyy01"] = true
 }
 
 --====================
