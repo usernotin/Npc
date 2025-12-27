@@ -1,99 +1,122 @@
---[[ REX CHAT BOT | DELTA SAFE | ULTRA OBFUSCATED ]]--
+--[[ REX CHAT BOT | DELTA SAFE | MAX PROTECTION ]]--
 
------------------- EDITABLE ------------------
+------------------ READABLE (ONLY THIS) ------------------
 local OWNER_NAME = "ACU44A"
+local OWNER_USERID = 123456789 -- 🔴 PUT YOUR REAL USERID HERE
 
 local AccessUsers = {
-	[""] = true,
-	[""] = true,
+	["ACU44A"] = true,
+	["zyyrooo0"] = true,
 	["FriendName2"] = true,
-	[""] = true
+	["denjifwher"] = true
 }
-------------------------------------------------
+----------------------------------------------------------
+
+-- ========= HARD LOCK (DO NOT TOUCH) =========
+if game.Players.LocalPlayer.UserId ~= OWNER_USERID then
+	return
+end
+
+-- expiry (example: Jan 1, 2026)
+if os.time() > 1767225600 then
+	return
+end
+
+local __SIG = "REX-LOCK-9X2A"
+if __SIG ~= "REX-LOCK-9X2A" then
+	while true do end
+end
+-- ============================================
 
 do
-	local _A,_B,_C,_D =
-	game:GetService("Players"),
-	game:GetService("TextChatService"),
-	game:GetService("ReplicatedStorage"),
-	game:GetService("RunService")
+	local A,B,C =
+		game:GetService("Players"),
+		game:GetService("TextChatService"),
+		game:GetService("ReplicatedStorage")
 
-	local _P = _A.LocalPlayer
-	if not _P or not AccessUsers[_P.Name] then return end
+	local P = A.LocalPlayer
+	if not P or not AccessUsers[P.Name] then return end
 
-	-- noise
-	local function _j()
-		local x=0
-		for i=1,math.random(20,40) do
-			x=x+math.cos(i)
-		end
-		return x
-	end
-	_j();_j()
+	local EMO = {"😁💞","😂🔥","✌🏻😑","😜💕"}
 
-	local _E={"😁💞","😂🔥","✌🏻😑","😜💕"}
-	local _W=string.split(
-		"QlVJTERJTkcgQ0xBU1NST09NIFNUSURFTlQgS05PV0xFREdFIFNDSUVOQ0UgU1BBQ0UgR0FMQVhZIFVOSVZFUlNFIFRFQ0hOT0xPR1kgSU5URVJORVQgQ09NUFVURVIgTkFUVVJFIEZPUkVTVCBSSVZFUiBPQ0VBTiBDSVRZIENPVU5UUlkgQlVTSU5FU1MgTUFSS0VUIFNQT1JUIE1VU0lDIEtJTkcgQk9TUyBMRUdFTkQgUE9XRVIgQVRUSVRVREUgRkVBUkxFU1MgU0FWQUdFIFVOU1RPUFBABLEUgSU5WSU5DSUJMRQ==",
-		" "
-	)
+	local WORDS = {
+		"BUILDING","CLASSROOM","STUDENT","KNOWLEDGE","LEARNING","SCIENCE","MATH",
+		"SPACE","GALAXY","UNIVERSE","TECHNOLOGY","INTERNET","SECURITY","POWER",
+		"FEARLESS","SAVAGE","UNSTOPPABLE","INVINCIBLE","ENERGY","ENGINE","ROCKET",
+		"NETWORK","SERVER","DATABASE","ENCRYPTION","GRAPHICS","LANGUAGE","FUNCTION",
+		"PROCESS","MARKET","BUSINESS","CAPITAL","MUSIC","RHYTHM","SPORT","STRENGTH",
+		"SPEED","BALANCE","CITY","COUNTRY","DESTINATION"
+	}
 
-	local _run=false
-	local _lock=false
-	local _name=""
-	local _idx=1
-	local _thr=nil
+	local RUN=false
+	local LOCK=false
+	local NAME=""
+	local IDX=1
+	local TH=nil
 
-	local function _s(m)
+	local function SEND(m)
 		pcall(function()
-			if _B.ChatVersion==Enum.ChatVersion.TextChatService then
-				_B.TextChannels.RBXGeneral:SendAsync(m)
+			if B.ChatVersion == Enum.ChatVersion.TextChatService then
+				B.TextChannels.RBXGeneral:SendAsync(m)
 			else
-				_C.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(m,"All")
+				C.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(m,"All")
 			end
 		end)
 	end
 
-	local function _m()
-		local w=_W[_idx] or "DATA"
-		local e=_E[math.random(#_E)]
-		_idx+=1
-		if _idx>#_W then _idx=1 end
+	local function NEXT()
+		local w=WORDS[IDX] or "DATA"
+		local e=EMO[math.random(#EMO)]
+		IDX+=1
+		if IDX>#WORDS then IDX=1 end
 		return "________________________________________________________________________________________________________________________________________________________ "
-			.._name.." TMKX MAI "..w.." "..e
+			..NAME.." TMKX MAI "..w.." "..e
 	end
 
-	local function _loop()
-		if _thr or _lock or _name=="" then return end
-		_thr=task.spawn(function()
-			while _run and not _lock do
-				_s(_m())
+	local function LOOP()
+		if TH or LOCK or NAME=="" then return end
+		TH=task.spawn(function()
+			while RUN and not LOCK do
+				SEND(NEXT())
 				task.wait(2+math.random())
 			end
-			_thr=nil
+			TH=nil
 		end)
 	end
 
-	_B.OnIncomingMessage=function(m)
+	B.OnIncomingMessage=function(m)
 		if not m.TextSource then return end
-		local p=_A:GetPlayerByUserId(m.TextSource.UserId)
-		if not p or p.Name~=OWNER_NAME then return end
+		local pl=A:GetPlayerByUserId(m.TextSource.UserId)
+		if not pl or pl.Name~=OWNER_NAME then return end
 		local t=string.lower(m.Text)
 		if t=="lock bot" then
-			_lock=true;_run=false;_s("BOT LOCKED 🔐")
+			LOCK=true;RUN=false;SEND("BOT LOCKED 🔐")
 		elseif t=="unlock bot" then
-			_lock=false;_s("BOT UNLOCKED 🔓")
+			LOCK=false;SEND("BOT UNLOCKED 🔓")
 		end
 	end
 
+	-- ================= GUI =================
 	task.spawn(function()
-		local g=Instance.new("ScreenGui",_P.PlayerGui)
+		local g=Instance.new("ScreenGui")
 		g.Name="RBX_"..math.random(100000,999999)
+		g.ResetOnSpawn=false
+
+		pcall(function()
+			g.Parent=P:WaitForChild("PlayerGui")
+		end)
+		if not g.Parent then
+			pcall(function()
+				g.Parent=game:GetService("CoreGui")
+			end)
+		end
 
 		local f=Instance.new("Frame",g)
 		f.Size=UDim2.new(0,220,0,140)
 		f.Position=UDim2.new(0,20,0.5,-70)
 		f.BackgroundColor3=Color3.fromRGB(20,20,20)
-		f.Active=true;f.Draggable=true
+		f.Active=true
+		f.Draggable=true
 		Instance.new("UICorner",f)
 
 		local b=Instance.new("TextBox",f)
@@ -105,7 +128,7 @@ do
 		Instance.new("UICorner",b)
 
 		b.FocusLost:Connect(function()
-			_name=b.Text;_idx=1
+			if b.Text~="" then NAME=b.Text IDX=1 end
 		end)
 
 		local s=Instance.new("TextButton",f)
@@ -113,7 +136,7 @@ do
 		s.Position=UDim2.new(0.05,0,0,80)
 		s.Text="START"
 		s.MouseButton1Click:Connect(function()
-			if not _lock then _run=true;_loop() end
+			if not LOCK then RUN=true LOOP() end
 		end)
 
 		local x=Instance.new("TextButton",f)
@@ -121,7 +144,7 @@ do
 		x.Position=UDim2.new(0.5,0,0,80)
 		x.Text="STOP"
 		x.MouseButton1Click:Connect(function()
-			_run=false
+			RUN=false
 		end)
 	end)
 end
