@@ -20,7 +20,7 @@ local AccessUsers = {
 	["ACU44A"] = true,
 	["denjifwher"] = true,
 	["FriendName2"] = true,
-	["animeguyy01"] = true
+	["Animeguyy01"] = true
 }
 
 --====================
